@@ -199,6 +199,11 @@ func (c *Config) retryAllMemApp() {
 		if app.config.SrcPort != 0 {
 			return true
 		}
+		if app.tunnelNum != int(gConf.sdwan.TunnelNum) {
+			gLog.d("memapp %s tunnelNum changed from %d to %d, delete it and not retry", app.config.LogPeerNode(), app.tunnelNum, gConf.sdwan.TunnelNum)
+			GNetwork.DeleteApp(app.config)
+			return true
+		}
 		app.Retry(true)
 		return true
 	})
@@ -332,6 +337,11 @@ func (c *Config) setNode(node string) {
 	defer c.mtx.Unlock()
 	c.Network.Node = node
 	c.Network.nodeID = NodeNameToID(c.Network.Node)
+}
+func (c *Config) setForcev6(force bool) {
+	c.mtx.Lock()
+	defer c.mtx.Unlock()
+	c.Forcev6 = force
 }
 func (c *Config) nodeID() uint64 {
 	c.mtx.Lock()
