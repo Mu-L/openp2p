@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const OpenP2PVersion = "3.25.8"
+const OpenP2PVersion = "3.25.11"
 const ProductName string = "openp2p"
 const LeastSupportVersion = "3.0.0"
 const SyncServerTimeVersion = "3.9.0"
@@ -545,6 +545,15 @@ type SDWANInfo struct {
 	TunnelNum     int32  `json:"tunnelNum,omitempty"`
 	Mtu           int32  `json:"mtu,omitempty"`
 	Nodes         []*SDWANNode
+}
+
+func (s *SDWANInfo) GetResourceByNodeName(nodeName string) string {
+	for _, node := range s.Nodes {
+		if node.Name == nodeName {
+			return node.Resource
+		}
+	}
+	return ""
 }
 
 const (

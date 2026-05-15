@@ -147,12 +147,17 @@ func handlePush(subType uint16, msg []byte) error {
 		gLog.i("MsgPushUpdate")
 		err := update(gConf.Network.ServerHost, gConf.Network.ServerPort)
 		if err == nil {
-			os.Exit(9) // 9 tell daemon this exit because of update
+			if !isAndroid() {
+				os.Exit(9) // 9 tell daemon this exit because of update
+			}
+
 		}
 		return err
 	case MsgPushRestart:
 		gLog.i("MsgPushRestart")
-		os.Exit(0)
+		if !isAndroid() {
+			os.Exit(0)
+		}
 		return err
 	case MsgPushReportApps:
 		err = handleReportApps()

@@ -119,6 +119,10 @@ func (c *Config) resetSDWAN() {
 func (c *Config) setSDWAN(s SDWANInfo) {
 	c.sdwanMtx.Lock()
 	defer c.sdwanMtx.Unlock()
+	allNew := false
+	if c.sdwan.GetResourceByNodeName(c.Network.Node) != s.GetResourceByNodeName(c.Network.Node) {
+		allNew = true
+	}
 	// get old-new
 	c.delNodes = []*SDWANNode{}
 	for _, oldNode := range c.sdwan.Nodes {
@@ -129,7 +133,7 @@ func (c *Config) setSDWAN(s SDWANInfo) {
 				break
 			}
 		}
-		if isDeleted {
+		if isDeleted || allNew {
 			c.delNodes = append(c.delNodes, oldNode)
 		}
 	}
@@ -143,7 +147,7 @@ func (c *Config) setSDWAN(s SDWANInfo) {
 				break
 			}
 		}
-		if isNew {
+		if isNew || allNew {
 			c.addNodes = append(c.addNodes, newNode)
 		}
 	}
@@ -151,9 +155,9 @@ func (c *Config) setSDWAN(s SDWANInfo) {
 	if c.sdwan.TunnelNum < 2 {
 		c.sdwan.TunnelNum = 2 // DEBUG
 	}
-	if c.sdwan.TunnelNum > 3 {
-		c.sdwan.TunnelNum = 3
-	}
+	// if c.sdwan.TunnelNum > 3 {
+	// 	c.sdwan.TunnelNum = 3
+	// }
 }
 
 func (c *Config) switchApp(app AppConfig, enabled int) {

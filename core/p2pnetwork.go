@@ -153,7 +153,9 @@ func (pn *P2PNetwork) keepAlive() {
 			}
 			gLog.e("P2PNetwork keepAlive error, exit worker")
 			dumpStack()
-			os.Exit(9)
+			if !isAndroid() {
+				os.Exit(9)
+			}
 		}
 	}
 }
@@ -811,7 +813,9 @@ func (pn *P2PNetwork) init() error {
 				head, _ := pn.read("", MsgReport, MsgReportBasicRsp, ClientAPITimeout)
 				if head == nil {
 					gLog.e("read MsgReportBasic rsp error again, exit")
-					os.Exit(9)
+					if !isAndroid() {
+						os.Exit(9)
+					}
 				}
 				return
 			}
